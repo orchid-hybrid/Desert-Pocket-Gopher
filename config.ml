@@ -15,8 +15,8 @@ let fat_ro dir =
   kv_ro_of_fs (fat_of_files ~dir ())
 
 let fs = match mode with
-  | `Fat    -> fat_ro "./pages"
-  | `Crunch -> crunch "./pages"
+  | `Fat    -> fat_ro "./resources"
+  | `Crunch -> crunch "./resources"
 
 let net =
   try match Sys.getenv "NET" with
@@ -37,12 +37,12 @@ let stack =
   | `Direct, false -> direct_stackv4_with_default_ipv4 default_console tap0
   | `Socket, _ -> socket_stackv4 default_console [Ipaddr.V4.any]
 
-let main = foreign "Example.Main" (console @-> stackv4 @-> kv_ro @-> job)
+let main = foreign "Server.Main" (console @-> stackv4 @-> kv_ro @-> job)
 
 let () =
   add_to_opam_packages ["conduit"];
   add_to_ocamlfind_libraries["conduit.mirage"; "tcpip.channel"];
-  register "example" [
+  register "server" [
     main $ default_console $ stack $ fs
   ]
 
